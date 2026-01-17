@@ -13,10 +13,8 @@ export default function Header() {
   const navigation = [
     { name: t('nav.home'), href: "/" },
     { name: t('nav.services'), href: "/#services" },
-    { name: t('nav.solutions'), href: "/vente" },
     { name: t('nav.portfolio'), href: "/#portfolio" },
     { name: t('nav.about'), href: "/#about" },
-    { name: 'API Docs', href: "/api-docs" },
     { name: t('nav.contact'), href: "/#contact" },
   ];
 
@@ -99,8 +97,9 @@ export default function Header() {
                   {item.name}
                 </a>
               ))}
-              <div className="pt-2">
-                <Button asChild className="w-full gradient-primary">
+              <div className="pt-2 flex items-center justify-between gap-2">
+                <LanguageSwitcher />
+                <Button asChild className="flex-1 gradient-primary">
                   <a href="/#contact">{t('hero.cta1')}</a>
                 </Button>
               </div>
