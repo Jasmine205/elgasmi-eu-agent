@@ -161,11 +161,24 @@ export async function addChatMessage(message: InsertChatMessage) {
   await db.insert(chatMessages).values(encryptedMessage);
 }
 
+// In-memory storage for contact messages when database is not available
+const inMemoryContactMessages: Array<InsertContactMessage & { id: number; createdAt: Date }> = [];
+let contactIdCounter = 1;
+
 // Contact message functions
 export async function createContactMessage(message: InsertContactMessage) {
   const db = await getDb();
   if (!db) {
-    throw new Error("Database not available");
+    // Fallback to in-memory storage
+    console.log("[Contact] Database not available, storing message in memory");
+    const storedMessage = {
+      ...message,
+      id: contactIdCounter++,
+      createdAt: new Date(),
+    };
+    inMemoryContactMessages.push(storedMessage);
+    console.log(`[Contact] Message stored with ID: ${storedMessage.id}`);
+    return { insertId: storedMessage.id };
   }
 
   // Encrypt sensitive fields before storing

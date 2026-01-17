@@ -1,0 +1,27 @@
+# Cloudflare Workers configuration
+# Note: This is for deploying the frontend to Cloudflare Pages
+# The backend should be deployed separately (Railway, Render, etc.)
+
+name = "elgasmi-eu"
+main = "dist/index.js"
+compatibility_date = "2024-01-01"
+
+# For Cloudflare Pages (static frontend)
+[site]
+bucket = "./dist"
+
+[vars]
+NODE_ENV = "production"
+
+# Build configuration for Pages
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "client/src"
+
+# Environment variables (set in Cloudflare dashboard)
+# JWT_SECRET - Set in dashboard
+# ENCRYPTION_KEY - Set in dashboard
+# DATABASE_URL - Set in dashboard
+# BUILT_IN_FORGE_API_URL - Set in dashboard
+# BUILT_IN_FORGE_API_KEY - Set in dashboard

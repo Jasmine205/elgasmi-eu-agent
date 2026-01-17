@@ -19,6 +19,132 @@ import { AGENT_TOOLS, executeTool, getToolsForLLM } from "./agent-tools";
 const inMemoryChats = new Map<string, { id: number; messages: Array<{ role: string; content: string }> }>();
 let chatIdCounter = 1;
 
+// Smart response generator for when LLM is unavailable
+function generateSmartResponse(userMessage: string): string {
+  const msg = userMessage.toLowerCase();
+
+  // Detect language
+  const isArabic = /[\u0600-\u06FF]/.test(msg);
+  const isGerman = /\b(ich|sie|wir|das|ist|und|der|die|ein|haben|hallo|guten|danke|bitte)\b/i.test(msg);
+  const isFrench = /\b(je|vous|nous|est|les|des|pour|avec|que|une|bonjour|merci|salut)\b/i.test(msg);
+
+  // Detect intent
+  const isGreeting = /\b(hi|hello|hey|bonjour|salut|hallo|guten tag|مرحبا|السلام)\b/i.test(msg);
+  const isPrice = /\b(price|prix|cost|cout|kosten|preis|tarif|combien|how much|سعر|كم)\b/i.test(msg);
+  const isService = /\b(service|offer|offre|angebot|leistung|what do you|que faites|خدمات|ماذا)\b/i.test(msg);
+  const isContact = /\b(contact|email|phone|tel|appel|call|anruf|kontakt|whatsapp|اتصال|هاتف)\b/i.test(msg);
+  const isAutomation = /\b(automat|ai|agent|bot|intelligent|automatiser|automatisierung|ذكاء|أتمتة)\b/i.test(msg);
+  const isThanks = /\b(thank|merci|danke|شكر)\b/i.test(msg);
+
+  // Generate response based on language and intent
+  if (isArabic) {
+    if (isGreeting) return "مرحبا! انا المساعد الذكي لشركة Elgasmi.e.U. كيف يمكنني مساعدتك اليوم؟";
+    if (isPrice) return `عروضنا الثلاثة بسعر 10,000 يورو لكل منها (شراء نهائي بدون اشتراك):
+
+1. **نظام الوكلاء المتعددين** - للمبيعات والتسويق
+2. **منصة RAG مع 28+ اداة** - للانتاجية
+3. **ذكاء اصطناعي للمؤسسات** - للتطوير
+
+للمزيد من المعلومات: واتساب +43 681 2046 0618`;
+    if (isService || isAutomation) return `نحن متخصصون في انظمة الوكلاء الذكية وهندسة الخدمات المصغرة.
+
+عروضنا:
+- نظام وكلاء متعددين للاعمال
+- منصة RAG مع 28+ اداة متكاملة
+- ذكاء اصطناعي متعدد اللغات للمؤسسات
+
+تواصل معنا: +43 681 2046 0618`;
+    if (isContact) return `يمكنك التواصل معنا عبر:
+- واتساب: +43 681 2046 0618
+- البريد: asmaewarter5@gmail.com
+- العنوان: Hilschergasse 10/23, 1120 Wien, Austria`;
+    if (isThanks) return "عفوا! هل هناك شيء اخر يمكنني مساعدتك به؟";
+    return `شكرا لرسالتك. انا هنا لمساعدتك في حلول الاتمتة والذكاء الاصطناعي.
+
+للمساعدة الفورية: واتساب +43 681 2046 0618`;
+  }
+
+  if (isGerman) {
+    if (isGreeting) return "Guten Tag! Ich bin der intelligente Assistent von Elgasmi.e.U. Wie kann ich Ihnen heute helfen?";
+    if (isPrice) return `Unsere drei Angebote kosten jeweils 10.000 EUR (Einmalkauf, kein Abo):
+
+1. **Multi-Agenten-System** - fur Vertrieb & Marketing
+2. **RAG-Plattform mit 28+ Tools** - fur Produktivitat
+3. **Enterprise AI** - fur Entwicklung
+
+Mehr Infos: WhatsApp +43 681 2046 0618`;
+    if (isService || isAutomation) return `Wir sind spezialisiert auf Agentensysteme und Microservices-Architektur.
+
+Unsere Angebote:
+- Multi-Agenten-System fur Business
+- RAG-Plattform mit 28+ integrierten Tools
+- Mehrsprachige Enterprise-KI
+
+Kontakt: +43 681 2046 0618`;
+    if (isContact) return `Sie erreichen uns unter:
+- WhatsApp: +43 681 2046 0618
+- E-Mail: asmaewarter5@gmail.com
+- Adresse: Hilschergasse 10/23, 1120 Wien, Austria`;
+    if (isThanks) return "Gerne! Kann ich Ihnen noch bei etwas anderem helfen?";
+    return `Vielen Dank fur Ihre Nachricht. Ich helfe Ihnen gerne bei Automatisierung und KI-Losungen.
+
+Fur sofortige Hilfe: WhatsApp +43 681 2046 0618`;
+  }
+
+  if (isFrench) {
+    if (isGreeting) return "Bonjour! Je suis l'assistant intelligent d'Elgasmi.e.U. Comment puis-je vous aider aujourd'hui?";
+    if (isPrice) return `Nos trois offres sont a 10 000 EUR chacune (achat definitif, sans abonnement):
+
+1. **Systeme Multi-Agents** - Ventes & Marketing
+2. **Plateforme RAG 28+ outils** - Productivite
+3. **IA Enterprise** - Developpement
+
+Plus d'infos: WhatsApp +43 681 2046 0618`;
+    if (isService || isAutomation) return `Nous sommes specialises dans les systemes agentiques et l'architecture microservices.
+
+Nos offres:
+- Systeme multi-agents pour le business
+- Plateforme RAG avec 28+ outils integres
+- IA enterprise multilingue
+
+Contact: +43 681 2046 0618`;
+    if (isContact) return `Vous pouvez nous contacter via:
+- WhatsApp: +43 681 2046 0618
+- Email: asmaewarter5@gmail.com
+- Adresse: Hilschergasse 10/23, 1120 Wien, Austria`;
+    if (isThanks) return "Je vous en prie! Puis-je vous aider avec autre chose?";
+    return `Merci pour votre message. Je suis la pour vous aider avec l'automatisation et les solutions IA.
+
+Pour une aide immediate: WhatsApp +43 681 2046 0618`;
+  }
+
+  // English (default)
+  if (isGreeting) return "Hello! I'm the intelligent assistant of Elgasmi.e.U. How can I help you today?";
+  if (isPrice) return `Our three offers are 10,000 EUR each (one-time purchase, no subscription):
+
+1. **Multi-Agent System** - Sales & Marketing
+2. **RAG Platform with 28+ tools** - Productivity
+3. **Enterprise AI** - Development
+
+More info: WhatsApp +43 681 2046 0618`;
+  if (isService || isAutomation) return `We specialize in agentic systems and microservices architecture.
+
+Our offers:
+- Multi-agent system for business
+- RAG platform with 28+ integrated tools
+- Multilingual enterprise AI
+
+Contact: +43 681 2046 0618`;
+  if (isContact) return `You can reach us at:
+- WhatsApp: +43 681 2046 0618
+- Email: asmaewarter5@gmail.com
+- Address: Hilschergasse 10/23, 1120 Wien, Austria`;
+  if (isThanks) return "You're welcome! Is there anything else I can help you with?";
+  return `Thank you for your message. I'm here to help you with automation and AI solutions.
+
+For immediate assistance: WhatsApp +43 681 2046 0618`;
+}
+
 export const appRouter = router({
   system: systemRouter,
   agents: agentRouter,
@@ -152,7 +278,7 @@ You are not a simple chatbot. You are a unique, competent, and caring interlocut
    - +340% conversion, -70% acquisition cost
 
 2. **RAG Platform 28+ Tools** - Productivity
-   - Gmail, Slack, CRM, OCR, Claude AI integrated
+   - Gmail, Slack, CRM, OCR, Advanced AI integrated
    - -70% administrative time
 
 3. **Enterprise Multilingual AI** - Development
@@ -208,13 +334,21 @@ You: "Automation is our specialty. To guide you precisely, I need to understand 
           })),
         ];
 
-        // Call LLM
-        const response = await invokeLLM({
-          messages,
-        });
+        // Call LLM with smart fallback
+        let fullResponse = '';
+        try {
+          const response = await invokeLLM({
+            messages,
+          });
 
-        const assistantMessage = response.choices[0]?.message.content;
-        const fullResponse = typeof assistantMessage === 'string' ? assistantMessage : '';
+          const assistantMessage = response.choices[0]?.message.content;
+          fullResponse = typeof assistantMessage === 'string' ? assistantMessage : '';
+        } catch (llmError) {
+          console.error("[Chat] LLM error, using smart fallback:", llmError);
+
+          // Smart fallback - respond based on user intent
+          fullResponse = generateSmartResponse(input.message);
+        }
 
         // Save assistant response
         if (useInMemory) {
@@ -244,22 +378,67 @@ You: "Automation is our specialty. To guide you precisely, I need to understand 
         message: z.string().min(10),
       }))
       .mutation(async ({ input }) => {
-        // Save to database
-        await createContactMessage({
-          name: input.name,
-          email: input.email,
-          phone: input.phone,
-          company: input.company,
-          subject: input.subject,
-          message: input.message,
-          status: "new",
-        });
+        console.log("[Contact] Received new contact form submission");
+        console.log(`[Contact] From: ${input.name} <${input.email}>`);
+        console.log(`[Contact] Subject: ${input.subject}`);
 
-        // Notify owner
-        await notifyOwner({
-          title: `Nouveau message de contact: ${input.subject}`,
-          content: `De: ${input.name} (${input.email})\n${input.company ? `Entreprise: ${input.company}\n` : ''}${input.phone ? `Téléphone: ${input.phone}\n` : ''}\n\nMessage:\n${input.message}`,
-        });
+        try {
+          // Save to database (with in-memory fallback)
+          await createContactMessage({
+            name: input.name,
+            email: input.email,
+            phone: input.phone,
+            company: input.company,
+            subject: input.subject,
+            message: input.message,
+            status: "new",
+          });
+          console.log("[Contact] Message saved successfully");
+        } catch (dbError) {
+          console.warn("[Contact] Database save failed, message logged to console:", dbError);
+          console.log("=== CONTACT MESSAGE (BACKUP LOG) ===");
+          console.log(`Name: ${input.name}`);
+          console.log(`Email: ${input.email}`);
+          console.log(`Phone: ${input.phone || 'N/A'}`);
+          console.log(`Company: ${input.company || 'N/A'}`);
+          console.log(`Subject: ${input.subject}`);
+          console.log(`Message: ${input.message}`);
+          console.log("=====================================");
+        }
+
+        // Notify owner via email (wait for it)
+        try {
+          const emailSent = await notifyOwner({
+            title: `Nouveau message: ${input.subject}`,
+            content: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NOUVEAU MESSAGE DE CONTACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+De: ${input.name}
+Email: ${input.email}
+${input.phone ? `Telephone: ${input.phone}` : ''}
+${input.company ? `Entreprise: ${input.company}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SUJET: ${input.subject}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${input.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Recu le: ${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Vienna' })}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+          });
+
+          if (emailSent) {
+            console.log("[Contact] Email notification sent successfully!");
+          } else {
+            console.warn("[Contact] Email notification failed but form saved");
+          }
+        } catch (err) {
+          console.error("[Contact] Notification error:", err);
+        }
 
         return { success: true };
       }),

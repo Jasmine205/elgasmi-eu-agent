@@ -216,8 +216,11 @@ const resolveApiUrl = () =>
 
 const assertApiKey = () => {
   if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+    throw new Error("BUILT_IN_FORGE_API_KEY is not configured. Set it in .env file.");
   }
+  // Log API configuration (without exposing the key)
+  const keyPreview = ENV.forgeApiKey.substring(0, 10) + '...';
+  console.log(`[LLM] Using API key: ${keyPreview}`);
 };
 
 const normalizeResponseFormat = ({
@@ -266,7 +269,11 @@ const normalizeResponseFormat = ({
 };
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
-  assertApiKey();
+  // Check if API key is configured
+  if (!ENV.forgeApiKey || ENV.forgeApiKey.trim().length === 0) {
+    console.error("[LLM] API key not configured");
+    throw new Error("LLM_NOT_CONFIGURED");
+  }
 
   const {
     messages,
@@ -309,21 +316,43 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.response_format = normalizedResponseFormat;
   }
 
-  const response = await fetch(resolveApiUrl(), {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
-    },
-    body: JSON.stringify(payload),
-  });
+  const apiUrl = resolveApiUrl();
+  console.log(`[LLM] Calling API: ${apiUrl}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `LLM invoke failed: ${response.status} ${response.statusText} – ${errorText}`
-    );
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${ENV.forgeApiKey}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[LLM] API error ${response.status}: ${errorText}`);
+
+      // Specific error handling
+      if (response.status === 401) {
+        throw new Error("LLM_INVALID_API_KEY");
+      } else if (response.status === 429) {
+        throw new Error("LLM_RATE_LIMITED");
+      } else if (response.status === 402) {
+        throw new Error("LLM_INSUFFICIENT_CREDITS");
+      }
+
+      throw new Error(`LLM_ERROR_${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("[LLM] Response received successfully");
+    return result as InvokeResult;
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("LLM_")) {
+      throw error;
+    }
+    console.error("[LLM] Network or unexpected error:", error);
+    throw new Error("LLM_NETWORK_ERROR");
   }
-
-  return (await response.json()) as InvokeResult;
 }

@@ -1,16 +1,13 @@
-import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import fs from "node:fs";
 import path from "path";
 import { defineConfig } from "vite";
-import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
-
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime()];
+const plugins = [react(), tailwindcss()];
 
 export default defineConfig({
   plugins,
+  base: '/',
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -24,6 +21,20 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    chunkSizeWarningLimit: 2500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'vendor-react';
+            if (id.includes('mermaid')) return 'vendor-mermaid';
+            if (id.includes('shiki') || id.includes('oniguruma')) return 'vendor-syntax';
+            if (id.includes('@radix-ui')) return 'vendor-ui';
+            if (id.includes('cytoscape')) return 'vendor-cytoscape';
+          }
+        }
+      }
+    }
   },
   server: {
     host: true,

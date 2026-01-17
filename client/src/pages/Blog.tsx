@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Streamdown } from "streamdown";
 
 interface BlogArticle {
   id: string;

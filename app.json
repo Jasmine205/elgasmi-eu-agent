@@ -1,0 +1,44 @@
+{
+  "name": "elgasmi-eu",
+  "description": "Elgasmi.e.U - AI Solutions & Agentic Systems Platform",
+  "repository": "https://github.com/elgasmi/elgasmi-eu",
+  "keywords": ["node", "express", "react", "ai", "agents"],
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "value": "production"
+    },
+    "JWT_SECRET": {
+      "generator": "secret"
+    },
+    "ENCRYPTION_KEY": {
+      "generator": "secret"
+    },
+    "DATABASE_URL": {
+      "description": "MySQL database connection URL",
+      "required": false
+    },
+    "BUILT_IN_FORGE_API_URL": {
+      "description": "LLM API URL",
+      "required": false
+    },
+    "BUILT_IN_FORGE_API_KEY": {
+      "description": "LLM API Key",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "scripts": {
+    "postdeploy": "echo 'Deployment complete!'"
+  }
+}

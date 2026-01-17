@@ -5,7 +5,6 @@ import { trpc } from "@/lib/trpc";
 import { Bot, Loader2, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Streamdown } from "streamdown";
 
 interface ChatBoxProps {
   isOpen: boolean;
@@ -123,13 +122,7 @@ export default function ChatBox({ isOpen, onClose }: ChatBoxProps) {
                     : "bg-muted text-foreground"
                 }`}
               >
-                {msg.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none dark:prose-invert">
-                    <Streamdown>{msg.content}</Streamdown>
-                  </div>
-                ) : (
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                )}
+                <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
               </div>
             </div>
           ))}
