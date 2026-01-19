@@ -100,7 +100,7 @@ export default function CodeGenerator() {
     stack: {
       title: { en: "Technical Architecture", fr: "Architecture Technique", de: "Technische Architektur", ar: "البنية التقنية" },
       items: [
-        { label: "AI Engine", value: "GPT-4 Turbo + Claude 3 + Codestral" },
+        { label: "AI Engine", value: "GPT-4 Turbo + Advanced AI + Codestral" },
         { label: "Backend", value: "Python 3.12 + FastAPI + AsyncIO" },
         { label: "Processing", value: "Celery + Redis + RabbitMQ" },
         { label: "Storage", value: "PostgreSQL + MongoDB + S3" },

@@ -111,7 +111,7 @@ export default function AgentsAutonomes() {
     stack: {
       title: { en: "Technical Architecture", fr: "Architecture Technique", de: "Technische Architektur", ar: "البنية التقنية" },
       items: [
-        { label: "AI Core", value: "GPT-4 Turbo + Claude 3 + Custom LLMs" },
+        { label: "AI Core", value: "GPT-4 Turbo + Advanced AI + Custom LLMs" },
         { label: "Orchestration", value: "LangChain + LangGraph + AutoGen" },
         { label: "Backend", value: "FastAPI + Celery + Redis" },
         { label: "Integration", value: "REST API + Webhooks + Zapier" },

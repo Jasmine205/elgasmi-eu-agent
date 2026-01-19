@@ -54,7 +54,7 @@ export default function Vente() {
       features: [
         "Gmail, Slack, WhatsApp",
         "OCR & Image Analysis",
-        "RAG & Claude AI",
+        "RAG & Advanced AI",
         "CRM Integration",
       ],
       metrics: [

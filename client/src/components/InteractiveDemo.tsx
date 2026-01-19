@@ -299,7 +299,7 @@ export default function InteractiveDemo() {
                 </p>
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                   <div className="bg-purple-500/10 rounded-xl p-3 border border-purple-500/30 text-xs text-left">
-                    <div className="flex items-center gap-2 mb-1"><CheckCircle2 className="w-3 h-3 text-purple-500" /><span>Claude AI integre</span></div>
+                    <div className="flex items-center gap-2 mb-1"><CheckCircle2 className="w-3 h-3 text-purple-500" /><span>IA Avancee integree</span></div>
                     <div className="flex items-center gap-2 mb-1"><CheckCircle2 className="w-3 h-3 text-purple-500" /><span>Auto-apprentissage</span></div>
                     <div className="flex items-center gap-2"><CheckCircle2 className="w-3 h-3 text-purple-500" /><span>Predictions avancees</span></div>
                   </div>
