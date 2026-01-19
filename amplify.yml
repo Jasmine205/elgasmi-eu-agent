@@ -1,0 +1,30 @@
+# AWS Amplify Build Configuration
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install -g pnpm@10
+            - pnpm install
+        build:
+          commands:
+            - pnpm run build
+      artifacts:
+        baseDirectory: dist/public
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
+          - .pnpm-store/**/*
+      customHeaders:
+        - pattern: "**/*"
+          headers:
+            - key: X-Frame-Options
+              value: DENY
+            - key: X-XSS-Protection
+              value: "1; mode=block"
+            - key: X-Content-Type-Options
+              value: nosniff
+    appRoot: /

@@ -262,6 +262,186 @@ Pour chaque plateforme, ajouter un enregistrement DNS:
 
 ---
 
+## 7. FLY.IO (Edge Computing)
+
+### Creer un compte
+1. Aller sur https://fly.io
+2. Cliquer "Sign Up"
+
+### Deployer
+```bash
+# Installer Fly CLI
+curl -L https://fly.io/install.sh | sh
+
+# Se connecter
+fly auth login
+
+# Deployer
+cd C:/Users/Asmae/elgasmi-eu
+fly deploy
+
+# Ajouter les secrets
+fly secrets set DATABASE_URL="votre_url"
+fly secrets set JWT_SECRET="votre_secret"
+```
+
+**URL**: https://elgasmi-eu.fly.dev
+
+---
+
+## 8. DENO DEPLOY (Edge Runtime)
+
+### Creer un compte
+1. Aller sur https://deno.com/deploy
+2. Cliquer "Sign In" avec GitHub
+
+### Deployer
+```bash
+# Installer deployctl
+deno install -A jsr:@deno/deployctl
+
+# Deployer
+deployctl deploy --project=elgasmi-eu server/deno-entry.ts
+```
+
+Ou via dashboard:
+1. "New Project" -> "Deploy from GitHub"
+2. Selectionner le repo
+3. Entrypoint: `server/deno-entry.ts`
+
+**URL**: https://elgasmi-eu.deno.dev
+
+---
+
+## 9. CLOUDFLARE PAGES (CDN Global)
+
+### Creer un compte
+1. Aller sur https://cloudflare.com
+2. Creer un compte gratuit
+
+### Deployer
+```bash
+# Installer Wrangler
+npm install -g wrangler
+
+# Se connecter
+wrangler login
+
+# Build
+pnpm build
+
+# Deployer
+wrangler pages deploy dist/public --project-name=elgasmi-eu
+```
+
+**URL**: https://elgasmi-eu.pages.dev
+
+---
+
+## 10. FLEEK (IPFS/Web3)
+
+### Creer un compte
+1. Aller sur https://fleek.xyz
+2. S'inscrire
+
+### Deployer
+1. "Add new site"
+2. Connecter GitHub
+3. Configuration auto via `fleek.json`
+
+**URL**: https://elgasmi-eu.on.fleek.co + IPFS hash
+
+---
+
+## 11. SURGE.SH (Simple et rapide)
+
+### Deployer
+```bash
+# Installer Surge
+npm install -g surge
+
+# Build
+pnpm build
+
+# Copier index pour SPA
+cp dist/public/index.html dist/public/200.html
+
+# Deployer
+surge dist/public elgasmi-eu.surge.sh
+```
+
+**URL**: https://elgasmi-eu.surge.sh
+
+---
+
+## 12. GITHUB PAGES (Gratuit)
+
+### Activer
+1. Repo Settings -> Pages
+2. Source: GitHub Actions
+3. Le workflow `.github/workflows/deploy-pages.yml` deploie automatiquement
+
+**URL**: https://username.github.io/elgasmi-eu
+
+---
+
+## 13. FIREBASE HOSTING
+
+### Deployer
+```bash
+# Installer Firebase CLI
+npm install -g firebase-tools
+
+# Se connecter
+firebase login
+
+# Initialiser
+firebase init hosting
+
+# Build
+pnpm build
+
+# Deployer
+firebase deploy
+```
+
+**URL**: https://elgasmi-eu.web.app
+
+---
+
+## 14. AWS AMPLIFY
+
+### Deployer
+1. Aller sur AWS Amplify Console
+2. "New app" -> "Host web app"
+3. Connecter GitHub
+4. Configuration auto via `amplify.yml`
+
+**URL**: https://main.xxx.amplifyapp.com
+
+---
+
+## Tableau Recapitulatif
+
+| Plateforme | Type | Config | URL |
+|------------|------|--------|-----|
+| Render | Full-stack | `render.yaml` | .onrender.com |
+| Railway | Full-stack | `railway.json` | .up.railway.app |
+| Fly.io | Full-stack | `fly.toml` | .fly.dev |
+| Heroku | Full-stack | `Procfile` | .herokuapp.com |
+| DigitalOcean | Full-stack | `.do/app.yaml` | .ondigitalocean.app |
+| Netlify | Frontend+Functions | `netlify.toml` | .netlify.app |
+| Vercel | Frontend | `vercel.json` | .vercel.app |
+| Cloudflare | Frontend+Workers | `wrangler.toml` | .pages.dev |
+| Deno Deploy | Edge | `deno.json` | .deno.dev |
+| Fleek | IPFS | `fleek.json` | .on.fleek.co |
+| Surge | Frontend | - | .surge.sh |
+| GitHub Pages | Frontend | workflow | .github.io |
+| Firebase | Frontend+Functions | `firebase.json` | .web.app |
+| AWS Amplify | Frontend | `amplify.yml` | .amplifyapp.com |
+
+---
+
 ## Support
 
 - Email: asmaewarter5@gmail.com
