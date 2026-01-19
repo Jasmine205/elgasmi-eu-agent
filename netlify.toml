@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
-  PNPM_FLAGS = "--no-frozen-lockfile"
+  CI = "false"
 
 [[redirects]]
   from = "/api/*"
